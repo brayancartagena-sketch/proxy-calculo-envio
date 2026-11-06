@@ -1,9 +1,13 @@
 package com.example.shop;
 
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
 public class ShippingCalculatorProxy implements ShippingCalculator {
     private final ShippingCalculator legacy;
     private final ShippingCalculator smart;
     private final FeatureFlags flags;
+    private final ConcurrentMap<String, Double> smartResults = new ConcurrentHashMap<>();
 
     public ShippingCalculatorProxy(ShippingCalculator legacy,
                                    ShippingCalculator smart,
@@ -15,8 +19,9 @@ public class ShippingCalculatorProxy implements ShippingCalculator {
 
     @Override
     public double calculate(Order order) {
-        return flags.isEnabled("smart-shipping")
-                ? smart.calculate(order)
-                : legacy.calculate(order);
+        if (!flags.isEnabled("smart-shipping")) {
+            return legacy.calculate(order);
+        }
+        return smartResults.computeIfAbsent(order.id(), ignored -> smart.calculate(order));
     }
 }
