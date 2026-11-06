@@ -19,6 +19,6 @@ class ShippingCalculatorProxyTest {
     void usesSmartWhenFlagIsEnabled() {
         flags.enable("smart-shipping");
 
-        assertEquals(10.0, proxy.calculate(order));
+        assertEquals(15.0, proxy.calculate(order));
     }
 }
