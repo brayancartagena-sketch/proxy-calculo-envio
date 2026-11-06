@@ -8,7 +8,7 @@ class ShippingCalculatorProxyTest {
     private final Order order = new Order("o1", "c1", "Medellín", 100, 4);
     private final FeatureFlags flags = new FeatureFlags();
     private final ShippingCalculatorProxy proxy = new ShippingCalculatorProxy(
-            new LegacyShippingCalculator(), ignored -> 0.0, flags);
+            new LegacyShippingCalculator(), new SmartShippingCalculator(), flags);
 
     @Test
     void usesLegacyWhenFlagIsDisabled() {
@@ -19,6 +19,6 @@ class ShippingCalculatorProxyTest {
     void usesSmartWhenFlagIsEnabled() {
         flags.enable("smart-shipping");
 
-        assertEquals(0.0, proxy.calculate(order));
+        assertEquals(10.0, proxy.calculate(order));
     }
 }
