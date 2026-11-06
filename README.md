@@ -1,9 +1,25 @@
-# Taller: Proxy para migrar el cálculo de envío
+# Proxy de envíos
 
-Proyecto de práctica con Java 25 (LTS) y JUnit 5. El cliente `Checkout` usa la
-abstracción `ShippingCalculator`; durante la migración el Proxy delega según un
-feature flag. En el estado final, el cálculo inteligente queda activo y el
-Proxy evita repetir cálculos para el mismo `order.id()`.
+Ejercicio en Java sobre el patrón Proxy. El costo de envío depende del peso y
+la ciudad; el proxy guarda el cálculo inteligente para cada pedido.
 
-Ejecuta la suite con `mvn test`. La historia se construye en commits pequeños
-sobre `main`, manteniendo las pruebas verdes en cada paso.
+El cálculo inteligente está activo por defecto. Para crear un checkout con el
+cálculo anterior, pasa un `FeatureFlags` sin activar `smart-shipping`:
+
+```java
+FeatureFlags flags = new FeatureFlags();
+Checkout checkout = new Shop(flags).createCheckout();
+```
+
+Puedes activar o desactivar la regla con
+`flags.enable(FeatureFlags.SMART_SHIPPING)` y
+`flags.disable(FeatureFlags.SMART_SHIPPING)`. El historial de Git conserva los
+pasos incrementales: extracción de la interfaz, inyección en `Checkout`, proxy
+con el flag apagado, reglas del cálculo inteligente por separado, activación y
+limpieza del código legado.
+
+Para ejecutar las pruebas:
+
+```bash
+mvn test
+```
